@@ -1,55 +1,71 @@
 public class Solution {
-    public List<Integer> findSubstring(String s, String[] words) {
-        List<Integer> res = new ArrayList<>();  
-        if(s.length()==0||words.length==0) return res;
-        HashMap<String, Integer> map = new HashMap<>();
-        for(String st: words){
-            if(map.containsKey(st))
-                map.put(st, map.get(st)+1);
-            else
-                map.put(st, 1);
+    public ArrayList<Integer> findSubstring(String S, String[] L) {
+    // Note: The Solution object is instantiated only once and is reused by each test case.
+    ArrayList<Integer> res = new ArrayList<Integer>();
+    if(S==null || S.length()==0 || L==null || L.length==0)
+        return res;
+    HashMap<String,Integer> map = new HashMap<String,Integer>();
+    for(int i=0;i<L.length;i++)
+    {
+        if(map.containsKey(L[i]))
+        {
+            map.put(L[i],map.get(L[i])+1);
         }
-        int len = words[0].length();
-        for(int i=0; i<words[0].length(); i++){
-            HashMap<String, Integer> cur = new HashMap<>();
-            int count = 0;//count how many string(in the list) is included in the current substring
-            int left = i;
-            for(int j=i; j<=s.length()-words[0].length(); j+=words[0].length()){
-                String str = s.substring(j, j+words[0].length());
-                if(map.containsKey(str)){
-                    if(cur.containsKey(str))
-                        cur.put(str, map.get(str) +1);
-                    else
-                        cur.put(str, 1);
-                    if(cur.get(str)<=map.get(str))
-                        count++;
-                    else{//need to move the left side of window to make sure remove the extra string.
-                        while(cur.get(str)>map.get(str)){
-                            String tmp = s.substring(left, left + len);
-                            if(cur.containsKey(tmp)){
-                                cur.put(tmp, cur.get(tmp)-1);
-                                if(cur.get(tmp) < map.get(tmp))
-                                    count--;
-                            }
-                            left += len;
+        else
+        {
+            map.put(L[i],1);
+        }
+    }
+    for(int i=0;i<L[0].length();i++)
+    {
+        HashMap<String,Integer> curMap = new HashMap<String,Integer>();
+        int count = 0;
+        int left = i;
+        for(int j=i;j<=S.length()-L[0].length();j+=L[0].length())
+        {
+            String str = S.substring(j,j+L[0].length());
+            
+            if(map.containsKey(str))
+            {
+                if(curMap.containsKey(str))
+                    curMap.put(str,curMap.get(str)+1);
+                else
+                    curMap.put(str,1);
+                if(curMap.get(str)<=map.get(str))
+                    count++;
+                else
+                {
+                    while(curMap.get(str)>map.get(str))
+                    {
+                        String temp = S.substring(left,left+L[0].length());
+                        if(curMap.containsKey(temp))
+                        {
+                            curMap.put(temp,curMap.get(temp)-1);
+                            if(curMap.get(temp)<map.get(temp))
+                                count--;
                         }
-                    }
-                    if(count == words.length){
-                        res.add(left);
-                        String tmp = s.substring(left, left+len);
-                        if(cur.containsKey(tmp))
-                            cur.put(tmp, cur.get(tmp)-1);
-                        count--;
-                        left += len;
+                        left += L[0].length();
                     }
                 }
-                else{
-                    cur.clear();
-                    count = 0;
-                    left = j+len;
+                if(count == L.length)
+                {
+                    res.add(left);
+                    //if(left<)
+                    String temp = S.substring(left,left+L[0].length());
+                    if(curMap.containsKey(temp))
+                        curMap.put(temp,curMap.get(temp)-1);
+                    count--;
+                    left += L[0].length();
                 }
             }
+            else
+            {
+                curMap.clear();
+                count = 0;
+                left = j+L[0].length();
+            }
         }
-        return res;
     }
+    return res;
+}
 }
